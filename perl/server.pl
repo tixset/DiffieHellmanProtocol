@@ -21,8 +21,6 @@ my $socket = new IO::Socket::INET (LocalHost => $host, LocalPort => $port, Proto
 die "Не могу открыть сокет!\n" unless $socket;
 
 print "Сервер запущен\n";
-$sharedKey = getRandInt(1111, 9999);
-print "Общий ключ сгенерирован: $sharedKey\n";
 
 while(1) {
     my $client_socket = $socket->accept();
@@ -31,6 +29,8 @@ while(1) {
         @data_arr = split(':', $recieved_data);
         if ($recieved_data eq "GET_SHARED_KEY") {
             print "Клиент запрашивает общий ключ\n";
+            $sharedKey = getRandInt(1111, 9999);
+            print "Общий ключ сгенерирован: $sharedKey\n";
             print "Отправляю общий ключ: $sharedKey\n";
             $client_socket->send("SHARED_KEY:$sharedKey");
         }
