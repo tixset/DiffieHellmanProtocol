@@ -3,7 +3,7 @@ use warnings;
 use IO::Socket;
 
 my $host = '127.0.0.1';
-my $port = '5555';
+my $port = 5555;
 
 my $sharedKey;
 my $privateKey;
@@ -29,7 +29,7 @@ while(1) {
         @data_arr = split(':', $recieved_data);
         if ($recieved_data eq "GET_SHARED_KEY") {
             print "Клиент запрашивает общий ключ\n";
-            $sharedKey = getRandInt(1111, 9999);
+            $sharedKey = getRandInt(1000, 9999);
             print "Общий ключ сгенерирован: $sharedKey\n";
             print "Отправляю общий ключ: $sharedKey\n";
             $client_socket->send("SHARED_KEY:$sharedKey");
@@ -37,7 +37,7 @@ while(1) {
         if ((defined $data_arr[0]) && ($data_arr[0] eq "PUBLIC_KEY")) {
             $publicKey = $data_arr[1];
             print "Публичный ключ клиента получен: $publicKey\n";
-            $privateKey = getRandInt(1111, 9999);
+            $privateKey = getRandInt(1000, 9999);
             print "Приватный ключ сгенерирован: $privateKey\n";
             $KeyCipher = $publicKey + $privateKey;
             print "> Ключ шифрования посчитан: $KeyCipher\n";
