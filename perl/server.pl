@@ -7,10 +7,11 @@ my $port = 5555;
 
 my $sharedKey;
 my $privateKey;
-my $publicKey;
-my $KeyCipher;
-my @data_arr;
-my $recieved_data;
+my $clientPublicKey;
+my $serverPublicKey;
+my $keyCipher;
+my @dataArr;
+my $recievedData;
 
 sub getRandInt{
     my ($min, $max) = (shift, shift);
@@ -23,28 +24,28 @@ die "Не могу открыть сокет!\n" unless $socket;
 print "Сервер запущен\n";
 
 while(1) {
-    my $client_socket = $socket->accept();
+    my $clientSocket = $socket->accept();
     while (1){
-        $client_socket->recv($recieved_data, 1024);
-        @data_arr = split(':', $recieved_data);
-        if ($recieved_data eq "GET_SHARED_KEY") {
+        $clientSocket->recv($recievedData, 1024);
+        @dataArr = split(':', $recievedData);
+        if ($recievedData eq "GET_SHARED_KEY") {
             print "Клиент запрашивает общий ключ\n";
             $sharedKey = getRandInt(1000, 9999);
             print "Общий ключ сгенерирован: $sharedKey\n";
             print "Отправляю общий ключ: $sharedKey\n";
-            $client_socket->send("SHARED_KEY:$sharedKey");
+            $clientSocket->send("SHARED_KEY:$sharedKey");
         }
-        if ((defined $data_arr[0]) && ($data_arr[0] eq "PUBLIC_KEY")) {
-            $publicKey = $data_arr[1];
-            print "Публичный ключ клиента получен: $publicKey\n";
+        if ((defined $dataArr[0]) && ($dataArr[0] eq "PUBLIC_KEY")) {
+            $clientPublicKey = $dataArr[1];
+            print "Публичный ключ клиента получен: $clientPublicKey\n";
             $privateKey = getRandInt(1000, 9999);
             print "Приватный ключ сгенерирован: $privateKey\n";
-            $KeyCipher = $publicKey + $privateKey;
-            print "> Ключ шифрования посчитан: $KeyCipher\n";
-            $publicKey = $sharedKey + $privateKey;
-            print "Публичный ключ сервера посчитан: $publicKey\n";
-            print "Отправляю публичный ключ: $publicKey\n";
-            $client_socket->send("PUBLIC_KEY:$publicKey");
+            $keyCipher = $clientPublicKey + $privateKey;
+            print "> Ключ шифрования посчитан: $keyCipher\n";
+            $serverPublicKey = $sharedKey + $privateKey;
+            print "Публичный ключ сервера посчитан: $serverPublicKey\n";
+            print "Отправляю публичный ключ: $serverPublicKey\n";
+            $clientSocket->send("PUBLIC_KEY:$serverPublicKey");
             print "Задача завершена!\n";
             last;
         }
