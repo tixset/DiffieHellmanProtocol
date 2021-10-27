@@ -27,14 +27,14 @@ while True:
         data_arr = recieved_data.split(':')
         if recieved_data == "GET_SHARED_KEY":
             print "Клиент запрашивает общий ключ"
-            sharedKey = randint(1111, 9999)
+            sharedKey = randint(1000, 9999)
             print "Общий ключ сгенерирован: " + str(sharedKey)
             print "Отправляю общий ключ: " + str(sharedKey)
             client_socket.send("SHARED_KEY:" + str(sharedKey))
         if (data_arr[0]) and (data_arr[0] == "PUBLIC_KEY"):
             publicKey = int(data_arr[1])
             print "Публичный ключ клиента получен: " + str(publicKey)
-            privateKey = randint(1111, 9999);
+            privateKey = randint(1000, 9999);
             print "Приватный ключ сгенерирован: " + str(privateKey)
             KeyCipher = publicKey + privateKey
             print "> Ключ шифрования посчитан: " + str(KeyCipher)
@@ -44,4 +44,3 @@ while True:
             client_socket.send("PUBLIC_KEY:" + str(publicKey))
             print "Задача завершена!"
             break
-conn.close()
