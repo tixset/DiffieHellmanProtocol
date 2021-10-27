@@ -3,7 +3,7 @@ use warnings;
 use IO::Socket;
 
 my $host = '127.0.0.1';
-my $port = '5555';
+my $port = 5555;
 
 my $sharedKey;
 my $privateKey;
@@ -13,8 +13,8 @@ my @data_arr;
 my $recv_data;
 
 sub getRandInt{
-  my ($min, $max) = (shift, shift);
-  return $min + int(rand( $max - $min + 1 ));
+    my ($min, $max) = (shift, shift);
+    return $min + int(rand( $max - $min + 1 ));
 }
 
 my $socket = new IO::Socket::INET (PeerAddr => $host, PeerPort => $port, Proto => 'tcp');
@@ -30,7 +30,7 @@ while (1) {
     if ($data_arr[0] eq "SHARED_KEY") {
         $sharedKey = $data_arr[1];
         print "Общий ключ получен: $sharedKey\n";
-        $privateKey = getRandInt(1111, 9999);
+        $privateKey = getRandInt(1000, 9999);
         print "Приватный ключ сгенерирован: $privateKey\n";
         $publicKey = $sharedKey + $privateKey;
         print "Публичный ключ клиента посчитан: $publicKey\n";
