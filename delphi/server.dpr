@@ -37,30 +37,29 @@ var
   dataArr: tStringList;
 begin
   recievedData := socket.ReceiveText;
-  writeLn(recievedData);
   dataArr := tStringList.Create;
   split(':', recievedData, dataArr);
   if (recievedData = 'GET_SHARED_KEY') then
   begin
-    writeLn('Клиент запрашивает общий ключ');
+    writeLn('ГЉГ«ГЁГҐГ­ГІ Г§Г ГЇГ°Г ГёГЁГўГ ГҐГІ Г®ГЎГ№ГЁГ© ГЄГ«ГѕГ·');
     sharedKey := getRandInt(1111, 9999);
-    writeLn('Общий ключ сгенерирован: ' + intToStr(sharedKey));
-    writeLn('Отправляю общий ключ: ' + intToStr(sharedKey));
+    writeLn('ГЋГЎГ№ГЁГ© ГЄГ«ГѕГ· Г±ГЈГҐГ­ГҐГ°ГЁГ°Г®ГўГ Г­: ' + intToStr(sharedKey));
+    writeLn('ГЋГІГЇГ°Г ГўГ«ГїГѕ Г®ГЎГ№ГЁГ© ГЄГ«ГѕГ·: ' + intToStr(sharedKey));
     socket.SendText('SHARED_KEY:' + intToStr(sharedKey));
   end;
   if ((dataArr.Count > 1) and (dataArr[0] = 'PUBLIC_KEY')) then
   begin
     clientPublicKey := strToInt(dataArr[1]);
-    writeLn('Публичный ключ клиента получен: ' + intToStr(clientPublicKey));
+    writeLn('ГЏГіГЎГ«ГЁГ·Г­Г»Г© ГЄГ«ГѕГ· ГЄГ«ГЁГҐГ­ГІГ  ГЇГ®Г«ГіГ·ГҐГ­: ' + intToStr(clientPublicKey));
     privateKey := getRandInt(1000, 9999);
-    writeLn('Приватный ключ сгенерирован: ' + intToStr(privateKey));
+    writeLn('ГЏГ°ГЁГўГ ГІГ­Г»Г© ГЄГ«ГѕГ· Г±ГЈГҐГ­ГҐГ°ГЁГ°Г®ГўГ Г­: ' + intToStr(privateKey));
     keyCipher := clientPublicKey + privateKey;
-    writeLn('> Ключ шифрования посчитан: ' + intToStr(keyCipher));
+    writeLn('> ГЉГ«ГѕГ· ГёГЁГґГ°Г®ГўГ Г­ГЁГї ГЇГ®Г±Г·ГЁГІГ Г­: ' + intToStr(keyCipher));
     serverPublicKey := sharedKey + privateKey;
-    writeLn('Публичный ключ сервера посчитан: ' + intToStr(serverPublicKey));
-    writeLn('Отправляю публичный ключ: ' + intToStr(serverPublicKey));
+    writeLn('ГЏГіГЎГ«ГЁГ·Г­Г»Г© ГЄГ«ГѕГ· Г±ГҐГ°ГўГҐГ°Г  ГЇГ®Г±Г·ГЁГІГ Г­: ' + intToStr(serverPublicKey));
+    writeLn('ГЋГІГЇГ°Г ГўГ«ГїГѕ ГЇГіГЎГ«ГЁГ·Г­Г»Г© ГЄГ«ГѕГ·: ' + intToStr(serverPublicKey));
     socket.SendText('PUBLIC_KEY: ' + intToStr(serverPublicKey));
-    writeLn('Задача завершена!');
+    writeLn('Г‡Г Г¤Г Г·Г  Г§Г ГўГҐГ°ГёГҐГ­Г !');
   end;
 end;
 
@@ -74,9 +73,9 @@ begin
   Try
     serverSocket.Open;
   except
-    showMessage('Не могу открыть сокет!');
+    showMessage('ГЌГҐ Г¬Г®ГЈГі Г®ГІГЄГ°Г»ГІГј Г±Г®ГЄГҐГІ!');
   end;
-  writeLn('Сервер запущен');
+  writeLn('Г‘ГҐГ°ГўГҐГ° Г§Г ГЇГіГ№ГҐГ­');
   while integer(getMessage(msg, 0, 0, 0)) <> 0 do
   begin
     translateMessage(msg);
