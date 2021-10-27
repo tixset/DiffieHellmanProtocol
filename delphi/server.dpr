@@ -41,25 +41,25 @@ begin
   split(':', recievedData, dataArr);
   if (recievedData = 'GET_SHARED_KEY') then
   begin
-    writeLn('ГЉГ«ГЁГҐГ­ГІ Г§Г ГЇГ°Г ГёГЁГўГ ГҐГІ Г®ГЎГ№ГЁГ© ГЄГ«ГѕГ·');
+    writeLn('Клиент запрашивает общий ключ');
     sharedKey := getRandInt(1111, 9999);
-    writeLn('ГЋГЎГ№ГЁГ© ГЄГ«ГѕГ· Г±ГЈГҐГ­ГҐГ°ГЁГ°Г®ГўГ Г­: ' + intToStr(sharedKey));
-    writeLn('ГЋГІГЇГ°Г ГўГ«ГїГѕ Г®ГЎГ№ГЁГ© ГЄГ«ГѕГ·: ' + intToStr(sharedKey));
+    writeLn('Общий ключ сгенерирован: ' + intToStr(sharedKey));
+    writeLn('Отправляю общий ключ: ' + intToStr(sharedKey));
     socket.SendText('SHARED_KEY:' + intToStr(sharedKey));
   end;
   if ((dataArr.Count > 1) and (dataArr[0] = 'PUBLIC_KEY')) then
   begin
     clientPublicKey := strToInt(dataArr[1]);
-    writeLn('ГЏГіГЎГ«ГЁГ·Г­Г»Г© ГЄГ«ГѕГ· ГЄГ«ГЁГҐГ­ГІГ  ГЇГ®Г«ГіГ·ГҐГ­: ' + intToStr(clientPublicKey));
+    writeLn('Публичный ключ клиента получен: ' + intToStr(clientPublicKey));
     privateKey := getRandInt(1000, 9999);
-    writeLn('ГЏГ°ГЁГўГ ГІГ­Г»Г© ГЄГ«ГѕГ· Г±ГЈГҐГ­ГҐГ°ГЁГ°Г®ГўГ Г­: ' + intToStr(privateKey));
+    writeLn('Приватный ключ сгенерирован: ' + intToStr(privateKey));
     keyCipher := clientPublicKey + privateKey;
-    writeLn('> ГЉГ«ГѕГ· ГёГЁГґГ°Г®ГўГ Г­ГЁГї ГЇГ®Г±Г·ГЁГІГ Г­: ' + intToStr(keyCipher));
+    writeLn('> Ключ шифрования посчитан: ' + intToStr(keyCipher));
     serverPublicKey := sharedKey + privateKey;
-    writeLn('ГЏГіГЎГ«ГЁГ·Г­Г»Г© ГЄГ«ГѕГ· Г±ГҐГ°ГўГҐГ°Г  ГЇГ®Г±Г·ГЁГІГ Г­: ' + intToStr(serverPublicKey));
-    writeLn('ГЋГІГЇГ°Г ГўГ«ГїГѕ ГЇГіГЎГ«ГЁГ·Г­Г»Г© ГЄГ«ГѕГ·: ' + intToStr(serverPublicKey));
+    writeLn('Публичный ключ сервера посчитан: ' + intToStr(serverPublicKey));
+    writeLn('Отправляю публичный ключ: ' + intToStr(serverPublicKey));
     socket.SendText('PUBLIC_KEY: ' + intToStr(serverPublicKey));
-    writeLn('Г‡Г Г¤Г Г·Г  Г§Г ГўГҐГ°ГёГҐГ­Г !');
+    writeLn('Задача завершена!');
   end;
 end;
 
@@ -68,14 +68,16 @@ begin
   setConsoleOutputCP(1251);
   serverSocket := tServerSocket.Create(nil);
   serverSocket.ServerType := stNonBlocking;
+  serverSocket.ThreadCacheSize := 10;
   serverSocket.OnClientRead := myClass.serverSocketClientRead;
   serverSocket.Port := port;
   Try
     serverSocket.Open;
   except
-    showMessage('ГЌГҐ Г¬Г®ГЈГі Г®ГІГЄГ°Г»ГІГј Г±Г®ГЄГҐГІ!');
+    writeLn('Не могу открыть сокет!');
+    ExitProcess(1);
   end;
-  writeLn('Г‘ГҐГ°ГўГҐГ° Г§Г ГЇГіГ№ГҐГ­');
+  writeLn('Сервер запущен');
   while integer(getMessage(msg, 0, 0, 0)) <> 0 do
   begin
     translateMessage(msg);
